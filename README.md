@@ -1,9 +1,8 @@
 <div align="center">
 
-
 <img src="antigravity.png" alt="Google Antigravity on Android Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
 
-# 🚀 Google Antigravity on Android
+# Google Antigravity on Android
 ### The Ultimate AI-Powered Agentic IDE & Desktop Workstation on Mobile
 
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20ARM64-brightgreen.svg?style=for-the-badge&logo=android)](https://github.com/erfan2255/debian-on-android)
@@ -73,7 +72,7 @@ graph LR
 
 ## 🛠️ Method 2: Power-User Setup via Termux + PRoot Debian
 
-For developers who want a full customizable stack with Turnip GPU acceleration, Wine gaming emulation, and multi-IDE support:
+For developers who want a full customizable stack with Wine gaming emulation and multi-IDE support:
 
 1. **Install Termux & Termux-X11:**
    * Install [Termux](https://github.com/termux/termux-app/releases) (F-Droid / GitHub) and [Termux-X11](https://github.com/termux/termux-x11/releases).
@@ -83,7 +82,7 @@ For developers who want a full customizable stack with Turnip GPU acceleration, 
    bash -c "$(curl -fsSL https://raw.githubusercontent.com/erfan2255/debian-on-android/main/setup.sh)"
    ```
 3. **Launch the Desktop:**
-   * Type `start-x11` in Termux, select **2 (Balanced GPU)**, and launch Antigravity 2.0 from your desktop!
+   * Type `start-x11` in Termux and launch Antigravity 2.0 from your desktop!
 
 ---
 
@@ -118,16 +117,6 @@ agy "Refactor this Python script for performance"
 # View all CLI commands
 agy --help
 ```
-
----
-
-## 🎛️ Hardware Acceleration & Power Profiles
-
-When launching via `start-x11`, the built-in **OS-Power** manager lets you tune performance:
-
-* 🟢 **1) Power Saver:** Disables compositor and uses software rendering for maximum battery life.
-* 🟡 **2) Balanced (Recommended):** Real **VirGL / Turnip-Zink GPU Acceleration** delivering silky-smooth 60fps rendering without overheating.
-* 🔴 **3) Performance:** Overclocked Gallium pipelines with maximum Box64 dynamic recompiler optimizations.
 
 ---
 
