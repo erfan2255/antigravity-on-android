@@ -1,7 +1,7 @@
 <div align="center">
 
 
-<img src="assets/antigravity-android-banner.png" alt="Google Antigravity on Android Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+<img src="antigravity.png" alt="Google Antigravity on Android Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
 
 # 🚀 Google Antigravity on Android
 ### The Ultimate AI-Powered Agentic IDE & Desktop Workstation on Mobile
