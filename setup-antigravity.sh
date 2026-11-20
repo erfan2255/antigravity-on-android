@@ -60,26 +60,50 @@ $SUDO bash -c "echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/02apt-speedup" 2>/d
 $SUDO bash -c "echo 'Acquire::Languages \"none\";' > /etc/apt/apt.conf.d/99speedup" 2>/dev/null || true
 
 $SUDO apt-get update
-$SUDO apt-get install -y curl wget tar jq zenity file xdg-utils libnss3 libsecret-1-0 libx11-xcb1 libgbm1 libasound2t64 libasound2 fonts-noto-core fonts-vazirmatn || true
+$SUDO apt-get install -y curl wget tar jq zenity file xdg-utils libnss3 libsecret-1-0 libx11-xcb1 libgbm1 libasound2t64 libasound2 fonts-noto-core fonts-vazirmatn fonts-dejavu fonts-liberation fonts-noto-color-emoji fonts-font-awesome fonts-freefont-ttf fontconfig || true
+$SUDO fc-cache -fv > /dev/null 2>&1 || true
 
-# --- [2/4] Download & Extract Antigravity 2.0 ---
-echo -e "\n${C_BLUE}>>> [2/4] Downloading Google Antigravity 2.0...${C_RESET}"
+# --- [2/4] Download & Extract Latest Antigravity 2.0 ---
+echo -e "\n${C_BLUE}>>> [2/4] Downloading Latest Google Antigravity 2.0...${C_RESET}"
 $SUDO mkdir -p /opt/antigravity
 
 if [ "$ARCH" == "aarch64" ] || [ "$ARCH" == "arm64" ]; then
-    DOWNLOAD_URL="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.8.1-6512087774658560/linux-arm/Antigravity.tar.gz"
+    TARGET_ARCH="linux-arm"
+    FALLBACK_URL="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.33.0-4731201358004224/linux-arm/Antigravity.tar.gz"
 else
-    DOWNLOAD_URL="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.8.1-6512087774658560/linux-x64/Antigravity.tar.gz"
+    TARGET_ARCH="linux-x64"
+    FALLBACK_URL="https://storage.googleapis.com/antigravity-public/antigravity-hub/2.33.0-4731201358004224/linux-x64/Antigravity.tar.gz"
+fi
+
+echo "Checking for latest release from antigravity.google/download..."
+DOWNLOAD_URL=$(curl -fsSL "https://antigravity.google/download" 2>/dev/null | grep -oE "https://storage\.googleapis\.com/antigravity-public/antigravity-hub/[^\"' ]+/${TARGET_ARCH}/Antigravity\.tar\.gz" | head -n 1 || true)
+if [ -z "$DOWNLOAD_URL" ]; then
+    DOWNLOAD_URL="$FALLBACK_URL"
 fi
 
 echo "Fetching archive from: $DOWNLOAD_URL"
+$SUDO rm -rf /opt/antigravity/*
 curl -fsSL "$DOWNLOAD_URL" | $SUDO tar -xz -C /opt/antigravity --strip-components=1
 
-# Create CLI / terminal wrapper
+# Create CLI / terminal wrapper with robust binary detection
 cat << 'EOF' | $SUDO tee /usr/local/bin/antigravity > /dev/null
 #!/bin/bash
 export ELECTRON_DISABLE_SECURITY_WARNINGS=true
-exec /opt/antigravity/antigravity --no-sandbox "$@"
+BIN_PATH=""
+if [ -f "/opt/antigravity/antigravity" ]; then
+    BIN_PATH="/opt/antigravity/antigravity"
+elif [ -f "/opt/antigravity/Antigravity" ]; then
+    BIN_PATH="/opt/antigravity/Antigravity"
+else
+    BIN_PATH=$(find /opt/antigravity -maxdepth 2 -type f -executable | head -n 1)
+fi
+
+if [ -n "$BIN_PATH" ]; then
+    exec "$BIN_PATH" --no-sandbox --force-color-profile=srgb --enable-font-antialiasing "$@"
+else
+    echo "Error: Antigravity binary not found in /opt/antigravity"
+    exit 1
+fi
 EOF
 $SUDO chmod +x /usr/local/bin/antigravity
 
@@ -87,14 +111,22 @@ $SUDO chmod +x /usr/local/bin/antigravity
 echo -e "\n${C_BLUE}>>> [3/4] Creating Desktop & Menu Shortcuts...${C_RESET}"
 $SUDO mkdir -p /usr/share/applications
 
-cat << 'EOF' | $SUDO tee /usr/share/applications/antigravity.desktop > /dev/null
+ICON_PATH="/opt/antigravity/resources/app/resources/linux/code.png"
+if [ ! -f "$ICON_PATH" ]; then
+    FOUND_ICON=$(find /opt/antigravity -maxdepth 5 -type f \( -name "antigravity.png" -o -name "code.png" -o -name "*.png" \) | head -n 1 || true)
+    if [ -n "$FOUND_ICON" ]; then
+        ICON_PATH="$FOUND_ICON"
+    fi
+fi
+
+cat << EOF | $SUDO tee /usr/share/applications/antigravity.desktop > /dev/null
 [Desktop Entry]
 Version=1.0
 Type=Application
 Name=Google Antigravity 2.0
 Comment=AI-Powered Agentic IDE
 Exec=/usr/local/bin/antigravity %F
-Icon=/opt/antigravity/resources/app/resources/linux/code.png
+Icon=$ICON_PATH
 Terminal=false
 Categories=Development;IDE;
 StartupNotify=true
@@ -141,10 +173,13 @@ fi
 EOF
 $SUDO chmod +x /usr/local/bin/sync-antigravity
 
-# Install Antigravity CLI (agy)
-echo "Installing Node.js & Antigravity CLI (agy)..."
+# Install Antigravity CLI (agy) & Dev Runtimes
+echo "Installing Antigravity CLI (agy)..."
+curl -fsSL https://antigravity.google/cli/install.sh | bash > /dev/null 2>&1 || true
+if [ -f "$HOME/.local/bin/agy" ] && [ ! -f "/usr/local/bin/agy" ]; then
+    $SUDO ln -sf "$HOME/.local/bin/agy" /usr/local/bin/agy 2>/dev/null || true
+fi
 $SUDO apt-get install -y nodejs npm python3 python3-pip python3-venv > /dev/null 2>&1 || true
-$SUDO npm install -g @google/antigravity-cli > /dev/null 2>&1 || $SUDO npm install -g antigravity > /dev/null 2>&1 || true
 
 echo ""
 echo -e "${C_GREEN}==============================================================${C_RESET}"
