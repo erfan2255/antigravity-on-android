@@ -90,3 +90,52 @@ For developers who want a full customizable stack with Wine gaming emulation and
 ## 🔄 How to Sync Conversations from PC to Android
 
 You can migrate your existing chats, history, artifacts, and memory from your Windows/Mac PC directly into Android:
+
+```
+[Windows PC: C:\Users\<User>\.gemini]  --->  [Phone: Download Folder]  --->  [Run 'sync-antigravity']
+```
+
+1. **On your PC:** Copy the `.gemini` folder from `C:\Users\<YourUsername>\.gemini` (or `~/.gemini` on Mac/Linux) to your phone's **Download** folder.
+2. **On your Android Linux Terminal:** Type:
+   ```bash
+   sync-antigravity
+   ```
+3. Open **Google Antigravity 2.0** — all your past chats, projects, and conversation histories are instantly restored!
+
+---
+
+## 🤖 Antigravity CLI Agent (`agy`)
+
+In addition to the full GUI desktop, you can use the autonomous terminal agent (installed automatically via `antigravity.google/cli/install.sh`):
+
+```bash
+# Launch interactive agent
+agy
+
+# Ask a direct question or prompt
+agy "Refactor this Python script for performance"
+
+# View all CLI commands
+agy --help
+```
+
+---
+
+## ⚙️ Minimum & Recommended Specifications
+
+| Component | Minimum | Recommended |
+| :--- | :--- | :--- |
+| **OS** | Android 9+ | Android 12+ (HyperOS, OneUI, OxygenOS) |
+| **CPU** | 64-bit ARM (ARMv8 / aarch64) | Snapdragon 865/870/8+ Gen 1/Gen 2/Gen 3, Dimensity 9000+ |
+| **RAM** | 4 GB | 8 GB – 12 GB (for heavy multitasking & canvas) |
+| **Storage** | 3 GB free space | 10 GB+ free space |
+| **Display** | Phone screen (touch) | Tablet (11" - 14") or External Monitor via USB-C DP |
+
+---
+
+## 📜 License & Credits
+
+* **Google Antigravity:** Developed by Google.
+* **Tiny Container:** Developed by [Cateners](https://github.com/Cateners/tiny_container).
+* **Termux Community:** [Termux](https://github.com/termux) & [Termux-X11](https://github.com/termux/termux-x11).
+* **Project Maintainer:** Open source community project. Licensed under [MIT License](LICENSE).
